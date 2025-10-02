@@ -9,22 +9,22 @@ def f(x):
 def monte_carlo(a, b, num_samples, ax=None):
 
     # Генерування випадкових точок
-    x_rand = np.random.uniform(a, b, N)
+    x_rand = np.random.uniform(a, b, num_samples)
     y_rand = np.random.uniform(0, f_max, num_samples)
     under_curve = y_rand < f(x_rand)
 
     # Оцінка площі
-    area_under_curve = (b - a) * f_max * np.sum(under_curve) / N
+    area_under_curve = (b - a) * f_max * np.sum(under_curve) / num_samples
 
     # Візуалізація
     x = np.linspace(a, b, 500)
     y = f(x)
     ax = ax if ax else plt.gca()
-    ax.plot(x, y, 'r-', label='f(x) = x² + 6x + 5')
+    ax.plot(x, y, 'r-', label='f(x)')
     ax.fill_between(x, y, alpha=0.2, color='gray', label='Аналітична площа')
     ax.scatter(x_rand[under_curve], y_rand[under_curve], color='green', s=1, label='Під кривою')
     ax.scatter(x_rand[~under_curve], y_rand[~under_curve], color='blue', s=1, label='Над кривою')
-    ax.set_title(f'N = {N}\nОцінка: {area_under_curve:.4f}, Аналітична: {true_area:.4f}')
+    ax.set_title(f'N = {N}\nОцінка: {area_under_curve:.4f}')
     ax.set_xlabel('x')
     ax.set_ylabel('f(x)')
     ax.legend()
@@ -45,10 +45,11 @@ if __name__ == "__main__":
     axes = axes.flatten()
 
     for i, N in enumerate(sample_sizes):
+
         # Оцінка площі
         area_estimate = monte_carlo(a, b, N, ax=axes[i])
         print(f"N={N}, Оцінка площі: {area_estimate:.5}")
 
-    plt.suptitle('Метод Монте-Карло (геометричний): порівняння для різних N', fontsize=16)
+    plt.suptitle(f'Метод Монте-Карло: порівняння для різних N, аналітична площа: {true_area:.4f}', fontsize=16)
     plt.tight_layout(rect=[0, 0, 1, 0.96])
     plt.show()
